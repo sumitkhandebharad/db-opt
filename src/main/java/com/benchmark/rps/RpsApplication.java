@@ -32,12 +32,7 @@ public class RpsApplication {
   }
 
   private static String resolveMode(String[] args) {
-    String envMode = System.getenv("APP_MODE");
-
-    if (envMode != null && !envMode.isBlank()) {
-      return envMode.trim();
-    }
-
+    // Match Spring Boot property precedence: explicit command-line arguments override env vars.
     for (String arg : args) {
       if (arg.startsWith("--app.mode=")) {
         return arg.substring("--app.mode=".length());
@@ -48,6 +43,11 @@ public class RpsApplication {
       }
     }
 
+    String envMode = System.getenv("APP_MODE");
+    if (envMode != null && !envMode.isBlank()) {
+      return envMode.trim();
+    }
+
     return DEFAULT_MODE;
   }
 
@@ -55,10 +55,10 @@ public class RpsApplication {
   private static void ensureDatabaseExists() {
     String host = firstNonBlank(System.getenv("DB_HOST"), "localhost");
     String port = firstNonBlank(System.getenv("DB_PORT"), "5432");
-    String database = firstNonBlank(System.getenv("DB_DATABASE"), "benchmark");
+    String database = firstNonBlank(System.getenv("DB_DATABASE"), "testdb");
     String user =
         firstNonBlank(System.getenv("DB_USER"), System.getenv("USER"), "postgres");
-    String password = firstNonBlank(System.getenv("DB_PASSWORD"), "");
+    String password = firstNonBlank(System.getenv("DB_PASSWORD"), "postgres");
 
     String adminUrl = "jdbc:postgresql://" + host + ":" + port + "/postgres";
     String safeDatabase = database.replace("\"", "\"\"");

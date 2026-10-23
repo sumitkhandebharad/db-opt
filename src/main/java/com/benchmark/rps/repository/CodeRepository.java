@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Repository;
  * comparison (mirrors Node /code-v1 … /code-v4).
  */
 @Repository
-@ConditionalOnBean(JdbcTemplate.class)
 public class CodeRepository {
 
   private static final RowMapper<CodeRecord> CODE_MAPPER =

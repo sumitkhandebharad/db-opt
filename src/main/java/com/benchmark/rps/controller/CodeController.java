@@ -128,6 +128,13 @@ public class CodeController {
     return Map.of("data", toApiCode(codeService.getFromRedis()));
   }
 
+  @GetMapping("/benchmark")
+  public Map<String, Object> benchmarkSequentially(
+      @RequestParam(defaultValue = "v1") String variant,
+      @RequestParam(defaultValue = "100") int requests) {
+    return codeService.benchmarkSequentially(variant, requests);
+  }
+
   private static Map<String, Object> toApiCode(CodeRecord record) {
     Map<String, Object> map = new HashMap<>();
     map.put("id", record.id());
