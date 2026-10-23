@@ -11,7 +11,6 @@ public class AppProperties {
   private String mode = "server";
   private final Seed seed = new Seed();
   private final SyncWorker syncWorker = new SyncWorker();
-  private int codeV4MaxId = 700_000;
 
   public boolean isPgConnect() {
     return pgConnect;
@@ -51,14 +50,6 @@ public class AppProperties {
 
   public SyncWorker getSyncWorker() {
     return syncWorker;
-  }
-
-  public int getCodeV4MaxId() {
-    return codeV4MaxId;
-  }
-
-  public void setCodeV4MaxId(int codeV4MaxId) {
-    this.codeV4MaxId = codeV4MaxId;
   }
 
   public static class Seed {

@@ -84,6 +84,30 @@ public class CodeRepository {
     return rows.stream().findFirst();
   }
 
+  /** Minimum ID; used to bound v4's random primary-key seek. */
+  public Optional<Long> findMinId() {
+    List<Long> rows =
+        jdbcTemplate.query(
+            "SELECT id FROM codes ORDER BY id ASC LIMIT 1", (rs, rowNum) -> rs.getLong("id"));
+    return rows.stream().findFirst();
+  }
+
+  /** v4 — seek to the first existing primary key at or above a sampled ID. */
+  public Optional<CodeRecord> findByIdAtOrAbove(long id) {
+    List<CodeRecord> rows =
+        jdbcTemplate.query(
+            """
+            SELECT id, code, created_at
+            FROM codes
+            WHERE id >= ?
+            ORDER BY id ASC
+            LIMIT 1
+            """,
+            CODE_MAPPER,
+            id);
+    return rows.stream().findFirst();
+  }
+
   /** v2/v3/v4 — primary-key index lookup. */
   public Optional<CodeRecord> findById(long id) {
     List<CodeRecord> rows =
