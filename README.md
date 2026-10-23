@@ -91,7 +91,7 @@ To run all five lookup variants and print a comparison table in the terminal, st
 ./scripts/benchmark-endpoints.sh
 ```
 
-The script defaults to 100 lookups per variant against `http://localhost:3010`. Override these settings with `REQUESTS` (1–10,000) and `BASE_URL`, for example:
+The script defaults to 1000 lookups per variant against `http://localhost:3010`. Override these settings with `REQUESTS` (1–10,000) and `BASE_URL`, for example:
 
 ```bash
 BASE_URL=http://localhost:3010 REQUESTS=500 ./scripts/benchmark-endpoints.sh
