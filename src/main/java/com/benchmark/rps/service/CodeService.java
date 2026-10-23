@@ -1,6 +1,5 @@
 package com.benchmark.rps.service;
 
-import com.benchmark.rps.config.AppProperties;
 import com.benchmark.rps.model.CodeRecord;
 import com.benchmark.rps.redis.RedisCodeStore;
 import com.benchmark.rps.repository.CodeRepository;
@@ -25,18 +24,15 @@ public class CodeService {
   private final CodeGenerator codeGenerator;
   private final ObjectProvider<CodeRepository> codeRepositoryProvider;
   private final RedisCodeStore redisCodeStore;
-  private final AppProperties props;
   private final SecureRandom random = new SecureRandom();
 
   public CodeService(
       CodeGenerator codeGenerator,
       ObjectProvider<CodeRepository> codeRepositoryProvider,
-      RedisCodeStore redisCodeStore,
-      AppProperties props) {
+      RedisCodeStore redisCodeStore) {
     this.codeGenerator = codeGenerator;
     this.codeRepositoryProvider = codeRepositoryProvider;
     this.redisCodeStore = redisCodeStore;
-    this.props = props;
   }
 
   public CodeRecord createInPostgres() {
@@ -84,12 +80,17 @@ public class CodeService {
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "record not found"));
   }
 
-  /** v4 — fixed-range PK lookup (assumes dense ids in range). */
+  /** v4 — sample the primary-key range, then seek forward to an existing row. */
   public CodeRecord getCodeV4() {
-    long max = props.getCodeV4MaxId();
-    long randomId = randomLongInclusive(1, max);
-    return requireRepo()
-        .findById(randomId)
+    CodeRepository repo = requireRepo();
+    long minId =
+        repo.findMinId()
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No codes found."));
+    long maxId = repo.findMaxId().orElseThrow();
+    long randomId = randomLongInclusive(minId, maxId);
+    return repo
+        .findByIdAtOrAbove(randomId)
+        .or(() -> repo.findMinId().flatMap(repo::findById))
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "record not found"));
   }
 

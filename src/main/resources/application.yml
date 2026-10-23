@@ -36,7 +36,6 @@ app:
     batch-size: 10000
   sync-worker:
     enabled: ${SYNC_WORKER_ENABLED:false}
-  code-v4-max-id: 700000
 
 logging:
   level:
