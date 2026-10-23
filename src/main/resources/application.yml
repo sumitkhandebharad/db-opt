@@ -1,0 +1,44 @@
+server:
+  port: 3010
+
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: rps
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_DATABASE:testdb}
+    username: ${DB_USER:${USER:postgres}}
+    password: ${DB_PASSWORD:postgres}
+    hikari:
+      maximum-pool-size: ${HIKARI_MAX_POOL:50}
+      minimum-idle: ${HIKARI_MIN_IDLE:10}
+      connection-timeout: 5000
+      pool-name: rps-hikari
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+app:
+  # Mirrors Node PG_CONNECT / REDIS_CLUSTER env vars
+  pg-connect: true
+  redis-cluster: ${REDIS_CLUSTER:false}
+  redis-cluster-port: ${REDIS_CLUSTER_PORT:7000}
+  # server | seed | migrate
+  mode: ${APP_MODE:server}
+  seed:
+    records: ${SEED_RECORDS:0}
+    batch-size: 10000
+  sync-worker:
+    enabled: ${SYNC_WORKER_ENABLED:false}
+  code-v4-max-id: 700000
+
+logging:
+  level:
+    root: INFO
+    com.benchmark.rps: INFO
