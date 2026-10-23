@@ -1,4 +1,4 @@
-# Spring Boot database optimization benchmark
+# Spring Boot database optimization 
 
 A Java 21 / Spring Boot implementation of the database lookup benchmark, designed for side-by-side comparison with its Node.js counterpart. It exposes four PostgreSQL lookup strategies and a Redis-backed lookup, plus utilities to seed PostgreSQL and migrate data to Redis.
 
